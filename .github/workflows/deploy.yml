@@ -1,0 +1,57 @@
+name: Build, Push & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-push:
+    name: Build & Push to Registry
+    runs-on: [self-hosted, trendson]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Registry
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.trendsoninfluence.com \
+            -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-8)
+          docker build \
+            -t registry.trendsoninfluence.com/designsystem:latest \
+            -t registry.trendsoninfluence.com/designsystem:${SHA_SHORT} \
+            .
+
+      - name: Push Docker image
+        run: |
+          SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-8)
+          docker push registry.trendsoninfluence.com/designsystem:latest
+          docker push registry.trendsoninfluence.com/designsystem:${SHA_SHORT}
+
+  deploy:
+    name: Deploy to Swarm
+    runs-on: [self-hosted, trendson, manager]
+    needs: build-push
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Registry (manager node)
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.trendsoninfluence.com \
+            -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+      - name: Deploy Stack
+        run: |
+          SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-8)
+          docker stack deploy \
+            --with-registry-auth \
+            --compose-file docker-stack.yml \
+            designsystem
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          docker service ps designsystem_web --no-trunc | head -5

@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  web:
+    image: registry.trendsoninfluence.com/designsystem:latest
+    networks:
+      - trendsonnet_v2
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=trendsonnet_v2"
+        - "traefik.http.routers.designsystem.rule=Host(`designsystem.trendsoninfluence.com`)"
+        - "traefik.http.routers.designsystem.entrypoints=websecure"
+        - "traefik.http.routers.designsystem.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.designsystem.service=designsystem"
+        - "traefik.http.services.designsystem.loadbalancer.server.port=80"
+        # HTTP → HTTPS redirect
+        - "traefik.http.routers.designsystem-http.rule=Host(`designsystem.trendsoninfluence.com`)"
+        - "traefik.http.routers.designsystem-http.entrypoints=web"
+        - "traefik.http.routers.designsystem-http.middlewares=redirect-to-https@docker"
+
+networks:
+  trendsonnet_v2:
+    external: true
