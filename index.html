@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrendsOn — Design Systems</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #e76066; margin-bottom: 2.5rem; letter-spacing: 0.05em; }
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.75rem; }
+    p { color: #888; margin-bottom: 2.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; max-width: 900px; width: 100%; }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: #e76066; transform: translateY(-2px); }
+    .card-label { font-size: 0.7rem; font-weight: 600; color: #e76066; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .card-desc { font-size: 0.85rem; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="logo">TRENDSON</div>
+  <h1>Design Systems</h1>
+  <p>Portal de sistemas de design para clientes TrendsOn</p>
+  <div class="grid">
+    <a href="/stellarbeauty" class="card">
+      <div class="card-label">Cliente</div>
+      <div class="card-title">Stellar Beauty</div>
+      <div class="card-desc">Sistema de design completo — identidade visual, componentes e guia de estilo</div>
+    </a>
+  </div>
+</body>
+</html>
